@@ -1,8 +1,8 @@
-# 臺中市天氣預報及問答系統
+# 天氣預報及問答系統
 
 ## 專案說明
 
-這是一個包含兩個 Python 腳本的專案：
+這是一個包含兩個 Python 的專案：
 
 1.  **`Weather_API.py`**: 從中央氣象署 (CWA) 的開放資料平台獲取臺中市的 36 小時天氣預報，並將資料儲存為 `weather_data.json`。
 2.  **`Weather_LLM.py`**: 使用大型語言模型 (LLM) 和 `weather_data.json` 檔案，讓您可以透過問答的方式查詢天氣資訊。
@@ -68,8 +68,8 @@
 - `langchain-community`
 - `faiss-cpu`
 - `ollama` (或其他您選擇的 LLM 服務)
-- `nomic-embed-text` (或其他您選擇的嵌入模型)
-- `gemma3:4b` (或其他您選擇的嵌入模型)
+- `nomic-embed-text` (或其他您選擇的向量模型)
+- `gemma3:4b` (或其他您選擇的其他LLM模型)
 
 ### 設定與使用
 
@@ -82,7 +82,7 @@
     ```
 
 3.  **設定大型語言模型 (LLM)**:
-    - 此腳本預設使用 `Ollama` 來運行本地的 `gemma3:4b` 模型和 `nomic-embed-text` 嵌入模型。
+    - 此腳本預設使用 `Ollama` 來運行本地的 `gemma3:4b` 模型和 `nomic-embed-text` 向量模型。
     - 請確保您已經安裝並運行了 Ollama，並且模型已經下載。
     - 如果您想使用不同的模型，請修改 `Weather_LLM.py` 中的 `Ollama` 和 `OllamaEmbeddings` 設定。
 
