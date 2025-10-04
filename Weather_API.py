@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-此腳本從台灣中央氣象署 (CWA) 的開放資料 API 獲取臺中市的天氣資料。
+此檔案從台灣中央氣象署 (CWA) 的開放資料 API 獲取臺中市的天氣資料。
 它會檢索三個不同時間段的天氣資訊，處理資料，並將其儲存為 JSON 檔案。
 """
 import os
@@ -43,9 +43,7 @@ def getWeather():
             if element_name == "Wx":
                 weather_info["天氣狀態"] = time_data["parameter"]["parameterName"]
             elif element_name == "PoP":  # 降水機率
-                weather_info["降雨機率"] = (
-                    time_data["parameter"]["parameterName"] + "%"
-                )
+                weather_info["降雨機率"] = time_data["parameter"]["parameterName"] + "%"
             elif element_name == "MinT":  # 最低溫度
                 weather_info["最低溫度"] = (
                     time_data["parameter"]["parameterName"] + "°C"
@@ -72,7 +70,7 @@ def save_to_json(weather_periods, filename="weather_data.json"):
         info["城市"] = "臺中市"
 
     # 使用 UTF-8 編碼將資料寫入 JSON 檔案
-    with open(filename, mode='w', encoding='utf-8') as file:
+    with open(filename, mode="w", encoding="utf-8") as file:
         # 使用 ensure_ascii=False 以正確處理中文字元
         # 使用 indent=4 進行美化輸出
         json.dump(weather_periods, file, ensure_ascii=False, indent=4)
