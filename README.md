@@ -1,61 +1,93 @@
-# 臺中市天氣預報資料API串接
+# 臺中市天氣預報及問答系統
 
 ## 專案說明
 
-這是一個 Python檔案，用於從中央氣象署的開放資料平台獲取臺中市的 36 小時天氣預報。檔案會將天氣資料（包括天氣狀態、降雨機率、溫度和體感等）處理後，儲存為一個名為 `weather_data.json` 的 JSON 檔案。
+這是一個包含兩個 Python 腳本的專案：
 
-## 資料來源
+1.  **`Weather_API.py`**: 從中央氣象署 (CWA) 的開放資料平台獲取臺中市的 36 小時天氣預報，並將資料儲存為 `weather_data.json`。
+2.  **`Weather_LLM.py`**: 使用大型語言模型 (LLM) 和 `weather_data.json` 檔案，讓您可以透過問答的方式查詢天氣資訊。
 
-本腳本使用的天氣資料來自[中央氣象署開放資料平台](https://opendata.cwa.gov.tw/)的「一般天氣預報-今明 36 小時天氣預報」API。
+---
 
-- **API 文件:** [F-C0032-001](https://opendata.cwa.gov.tw/dataset/forecast/F-C0032-001)
+## 第一部分：`Weather_API.py` - 天氣資料擷取
 
-## 主要功能
+### 功能
 
 - 獲取臺中市未來 36 小時內三個不同時間段的天氣預報。
-- 將天氣資料（天氣狀態、降雨機率、最低/最高溫度、天氣體感）整理成結構化格式。
-- 將處理後的資料儲存為 `weather_data.json` 檔案，方便後續應用。
+- 整理天氣資料（天氣狀態、降雨機率、最低/最高溫度、天氣體感）。
+- 將處理後的資料儲存為 `weather_data.json` 檔案。
 
-## 系統需求
+### 資料來源
+
+- **API:** [中央氣象署開放資料平台 - 一般天氣預報-今明 36 小時天氣預報](https://opendata.cwa.gov.tw/dataset/forecast/F-C0032-001)
+
+### 系統需求
 
 - Python 3.12或以上
-- `requests` 函式庫
-- `python-dotenv` 函式庫
+- `requests`
+- `python-dotenv`
 
-## 安裝指南
+### 設定與使用
 
-1. **複製或下載專案**
+1.  **獲取 API 金鑰**:
+    - 前往[中央氣象署開放資料平台](https://opendata.cwa.gov.tw/)註冊並登入。
+    - 在會員中心找到您的 API 授權碼 (API KEY)。
 
-2. **安裝所需的 Python 函式庫**
+2.  **建立 `.env` 檔案**:
+    - 在專案根目錄下建立一個 `.env` 檔案。
+    - 加入您的 API 金鑰：
+      ```
+      API_KEY="在這裡貼上您的API金鑰"
+      ```
 
-   在您的終端機或命令提示字元中執行以下指令：
+3.  **安裝套件**:
+    ```bash
+    pip install requests python-dotenv
+    ```
 
-   ```bash
-   pip install requests python-dotenv
-   ```
+4.  **執行腳本**:
+    ```bash
+    python Weather_API.py
+    ```
+    執行後會生成 `weather_data.json` 檔案。
 
-## 設定步驟
+---
 
-1. **獲取 API 金鑰**
+## 第二部分：`Weather_LLM.py` - 天氣問答系統
 
-   - 前往[中央氣象署開放資料平台](https://opendata.cwa.gov.tw/)
-   - 註冊並登入會員。
-   - 登入後，在會員中心可以找到您的 API 授權碼 (API KEY)。
+### 功能
 
-2. **建立 `.env` 檔案**
+- 讀取 `weather_data.json` 的天氣資料。
+- 使用 LangChain 和 FAISS 建立一個 RAG (Retrieval-Augmented Generation) 系統。
+- 讓使用者可以用自然語言提問，並由大型語言模型 (LLM) 根據天氣資料回答。
 
-   在專案的根目錄（與 `Weather_API.py` 相同的目錄）下，建立一個名為 `.env` 的檔案，並在其中加入您的 API 金鑰，格式如下：
+### 系統需求
 
-   ```
-   API_KEY="在這裡貼上您的API金鑰"
-   ```
+- Python 3.12或以上
+- `langchain`
+- `langchain-community`
+- `faiss-cpu`
+- `ollama` (或其他您選擇的 LLM 服務)
+- `nomic-embed-text` (或其他您選擇的嵌入模型)
+- `gemma3:4b` (或其他您選擇的嵌入模型)
 
-## 使用方法
+### 設定與使用
 
-完成設定後，直接執行 Python 檔案即可：
+1.  **確保 `weather_data.json` 已存在**:
+    - 請先執行 `Weather_API.py` 來生成天氣資料檔案。
 
-```bash
-python Weather_API.py
-```
+2.  **安裝套件**:
+    ```bash
+    pip install langchain langchain-community faiss-cpu ollama
+    ```
 
-腳本執行後，會在同一個目錄下生成 `weather_data.json` 檔案，並在終端機上印出獲取到的天氣資料。
+3.  **設定大型語言模型 (LLM)**:
+    - 此腳本預設使用 `Ollama` 來運行本地的 `gemma3:4b` 模型和 `nomic-embed-text` 嵌入模型。
+    - 請確保您已經安裝並運行了 Ollama，並且模型已經下載。
+    - 如果您想使用不同的模型，請修改 `Weather_LLM.py` 中的 `Ollama` 和 `OllamaEmbeddings` 設定。
+
+4.  **執行腳本**:
+    ```bash
+    python Weather_LLM.py
+    ```
+    執行後，您可以開始在終端機中輸入關於天氣的問題。
