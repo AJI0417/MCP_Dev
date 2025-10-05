@@ -1,93 +1,78 @@
-# 天氣預報及問答系統
+# 臺中市天氣問答系統
 
 ## 專案說明
 
-這是一個包含兩個 Python 的專案：
+本專案透過結合中央氣象署的開放天氣資料與大型語言模型 (LLM)，建立一個可以用自然語言互動的天氣問答機器人。
 
-1.  **`Weather_API.py`**: 從中央氣象署 (CWA) 的開放資料平台獲取臺中市的 36 小時天氣預報，並將資料儲存為 `weather_data.json`。
-2.  **`Weather_LLM.py`**: 使用大型語言模型 (LLM) 和 `weather_data.json` 檔案，讓您可以透過問答的方式查詢天氣資訊。
+專案包含兩個主要腳本：
+
+1.  **`Weather_API.py`**: 從氣象署 API 獲取臺中市的 36 小時天氣預報，並將其處理後儲存為 `weather_data.json`。
+2.  **`Weather_LLM.py`**: 啟動一個搭載 Chainlit UI 的 RAG (Retrieval-Augmented Generation) 問答系統，讓使用者可以根據 `weather_data.json` 的內容進行提問。
 
 ---
 
-## 第一部分：`Weather_API.py` - 天氣資料擷取
+## 操作方法
 
-### 功能
+### 第一步：獲取天氣資料 (`Weather_API.py`)
 
-- 獲取臺中市未來 36 小時內三個不同時間段的天氣預報。
-- 整理天氣資料（天氣狀態、降雨機率、最低/最高溫度、天氣體感）。
-- 將處理後的資料儲存為 `weather_data.json` 檔案。
+此腳本只**需要執行一次** (或在您想更新天氣資料時執行)。
 
-### 資料來源
+#### 1. 資料來源
 
-- **API:** [中央氣象署開放資料平台 - 一般天氣預報-今明 36 小時天氣預報](https://opendata.cwa.gov.tw/dataset/forecast/F-C0032-001)
+-   **API**: [中央氣象署開放資料平台 - 一般天氣預報-今明 36 小時天氣預報](https://opendata.cwa.gov.tw/dataset/forecast/F-C0032-001)
 
-### 系統需求
+#### 2. 設定
 
-- Python 3.12或以上
-- `requests`
-- `python-dotenv`
-
-### 設定與使用
-
-1.  **獲取 API 金鑰**:
-    - 前往[中央氣象署開放資料平台](https://opendata.cwa.gov.tw/)註冊並登入。
-    - 在會員中心找到您的 API 授權碼 (API KEY)。
-
-2.  **建立 `.env` 檔案**:
-    - 在專案根目錄下建立一個 `.env` 檔案。
-    - 加入您的 API 金鑰：
+-   **獲取 API 金鑰**:
+    -   前往[中央氣象署開放資料平台](https://opendata.cwa.gov.tw/)註冊並登入。
+    -   在會員中心找到您的 API 授權碼。
+-   **建立 `.env` 檔案**:
+    -   在專案根目錄下建立 `.env` 檔案，並填入您的金鑰：
       ```
       API_KEY="在這裡貼上您的API金鑰"
       ```
-
-3.  **安裝套件**:
+-   **安裝套件**:
     ```bash
     pip install requests python-dotenv
     ```
 
-4.  **執行腳本**:
-    ```bash
-    python Weather_API.py
-    ```
-    執行後會生成 `weather_data.json` 檔案。
+#### 3. 執行
+
+```bash
+python Weather_API.py
+```
+執行後，根目錄下會出現 `weather_data.json` 檔案。
 
 ---
 
-## 第二部分：`Weather_LLM.py` - 天氣問答系統
+### 第二步：啟動天氣問答系統 (`Weather_LLM.py`)
 
-### 功能
+#### 1. 功能
 
-- 讀取 `weather_data.json` 的天氣資料。
-- 使用 LangChain 和 FAISS 建立一個 RAG (Retrieval-Augmented Generation) 系統。
-- 讓使用者可以用自然語言提問，並由大型語言模型 (LLM) 根據天氣資料回答。
+-   讀取 `weather_data.json` 的天氣資料。
+-   使用 LangChain 和 Ollama 建立 RAG 系統。
+-   提供一個 Chainlit 聊天介面，讓您用自然語言查詢天氣。
 
-### 系統需求
+#### 2. 設定
 
-- Python 3.12或以上
-- `langchain`
-- `langchain-community`
-- `faiss-cpu`
-- `ollama` (或其他您選擇的 LLM 服務)
-- `nomic-embed-text` (或其他您選擇的向量模型)
-- `gemma3:4b` (或其他您選擇的其他LLM模型)
-
-### 設定與使用
-
-1.  **確保 `weather_data.json` 已存在**:
-    - 請先執行 `Weather_API.py` 來生成天氣資料檔案。
-
-2.  **安裝套件**:
+-   **安裝套件**:
     ```bash
-    pip install langchain langchain-community faiss-cpu ollama
+    pip install chainlit langchain langchain-community faiss-cpu langchain-ollama
     ```
+-   **安裝並設定 Ollama**:
+    -   本專案預設使用 Ollama 來運行本地的大型語言模型。請先[安裝 Ollama](https://ollama.com/)。
+    -   安裝完成後，下載本專案所需的模型：
+        ```bash
+        ollama pull gemma3:4b
+        ollama pull nomic-embed-text
+        ```
+    -   如果您想更換模型，請修改 `Weather_LLM.py` 中的 `llm` 和 `embeddings` 變數。
 
-3.  **設定大型語言模型 (LLM)**:
-    - 此腳本預設使用 `Ollama` 來運行本地的 `gemma3:4b` 模型和 `nomic-embed-text` 向量模型。
-    - 請確保您已經安裝並運行了 Ollama，並且模型已經下載。
-    - 如果您想使用不同的模型，請修改 `Weather_LLM.py` 中的 `Ollama` 和 `OllamaEmbeddings` 設定。
+#### 3. 執行
 
-4.  **執行腳本**:
+-   **啟動問答系統**:
     ```bash
-    python Weather_LLM.py
+    chainlit run Weather_LLM.py -w
     ```
-    執行後，您可以開始在終端機中輸入關於天氣的問題。
+-   此命令會啟動一個本地網頁伺服器，並自動在您的瀏覽器中打開聊天介面。
+-   現在，您可以開始在聊天視窗中提問了！
