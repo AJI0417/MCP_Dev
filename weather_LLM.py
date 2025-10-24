@@ -23,10 +23,9 @@ from langchain_community.vectorstores import FAISS  # 用於建立向量儲存�
 from langchain_ollama import (
     OllamaEmbeddings,
 )  # 從 langchain_ollama 匯入 Ollama 嵌入模型
-from langchain.chains.combine_documents import (
-    create_stuff_documents_chain,
-)  # 用於建立文件處理鏈
-from langchain.chains import create_retrieval_chain  # 用於建立檢索鏈
+from langchain_classic.chains.combine_documents import create_stuff_documents_chain
+# 用於建立文件處理鏈
+from langchain_classic.chains import create_retrieval_chain  # 用於建立檢索鏈
 
 
 def create_rag_chain():
@@ -50,8 +49,8 @@ def create_rag_chain():
 
     # 3. 設定嵌入模型
     embeddings = OllamaEmbeddings(
-        model="nomic-embed-text"
-    )  # 使用 nomic-embed-text 模型來建立文字向量
+        model="nomic-embed-text:latest"
+    )  # 使用 nomic-embed-text:latest 模型來建立文字向量
 
     # 4. 建立 FAISS 向量儲存庫
     vector = FAISS.from_documents(
