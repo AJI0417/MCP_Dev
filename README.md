@@ -57,8 +57,9 @@ python Weather_API.py
 
 -   **安裝套件**:
     ```bash
-    pip install chainlit langchain langchain-community faiss-cpu langchain-ollama
+    pip install chainlit langchain langchain-community faiss-cpu langchain-ollama langchain-classic
     ```
+    > **注意**: `langchain` 1.0 版更新後，部分模組已移至 `langchain-classic`。此專案已跟隨更新。詳細資訊請參考：[LangChain v1.0 Migration Guide](https://docs.langchain.com/oss/python/migrate/langchain-v1)
 -   **安裝並設定 Ollama**:
     -   本專案預設使用 Ollama 來運行本地的大型語言模型。請先[安裝 Ollama](https://ollama.com/)。
     -   安裝完成後，下載本專案所需的模型：
